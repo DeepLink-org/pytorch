@@ -154,6 +154,6 @@
 [submodule "third_party/cutlass"]
 	path = third_party/cutlass
 	url = https://github.com/NVIDIA/cutlass.git
-[submodule "third_party/dynamo-backends"]
-	path = third_party/dynamo-backends
-	url = git@github.com:OpenComputeLab/dynamo-backends.git
+[submodule "third_party/DICP"]
+	path = third_party/DICP
+	url = git@github.com:OpenComputeLab/DICP.git
