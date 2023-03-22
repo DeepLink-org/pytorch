@@ -217,6 +217,48 @@ class trace:
     upload_tar = None
 
 
+class partition_graph:
+    enabled = False
+    # operator_support only support resnet for now
+    # ref to: torch/fx/passes/operator_support.py OperatorSupport._support_dict
+    operator_support = {
+        "_operator.getitem": None,
+        "torch.ops.aten.add.Tensor": None,
+        "torch.ops.aten.addmm.default": None,
+        "torch.ops.aten.amax.default": None,
+        "torch.ops.aten.clone.default": None,
+        "torch.ops.aten.convolution.default": None,
+        "torch.ops.aten.convolution_backward.default": None,
+        "torch.ops.aten.div.Scalar": None,
+        "torch.ops.aten.div.Tensor": None,
+        "torch.ops.aten.exp.default": None,
+        "torch.ops.aten.expand.default": None,
+        "torch.ops.aten.full_like.default": None,
+        "torch.ops.aten.gather.default": None,
+        "torch.ops.aten.le.Scalar": None,
+        "torch.ops.aten.log.default": None,
+        "torch.ops.aten.max_pool2d_with_indices.default": None,
+        "torch.ops.aten.max_pool2d_with_indices_backward.default": None,
+        "torch.ops.aten.mean.dim": None,
+        "torch.ops.aten.mm.default": None,
+        "torch.ops.aten.mul.Tensor": None,
+        "torch.ops.aten.neg.default": None,
+        "torch.ops.aten.permute.default": None,
+        "torch.ops.aten.relu.default": None,
+        "torch.ops.aten.rsqrt.default": None,
+        "torch.ops.aten.scalar_tensor.default": None,
+        "torch.ops.aten.scatter.value": None,
+        "torch.ops.aten.squeeze.dim": None,
+        "torch.ops.aten.squeeze.dims": None,
+        "torch.ops.aten.sub.Tensor": None,
+        "torch.ops.aten.sum.default": None,
+        "torch.ops.aten.sum.dim_IntList": None,
+        "torch.ops.aten.unsqueeze.default": None,
+        "torch.ops.aten.var_mean.correction": None,
+        "torch.ops.aten.view.default": None,
+        "torch.ops.aten.where.self": None,
+    }
+
 from .._dynamo.config_utils import install_config_module
 
 # adds patch, save_config, etc

@@ -25,6 +25,7 @@ from .graph import GraphLowering
 from .mkldnn import convert_outplace_to_inplace
 from .utils import developer_warning, get_dtype_size, has_incompatible_cudagraph_ops
 from .virtualized import V
+from third_party.DICP.common.passes.partition_graph import partition_graph
 
 log = logging.getLogger(__name__)
 ALIGNMENT = 16
@@ -126,6 +127,7 @@ def count_bytes_inner(gm, example_inputs, num_fixed=0, **kwargs):
     return make_boxed_func(gm.forward)
 
 
+@partition_graph(config)
 @DebugContext.wrap
 @torch.utils._python_dispatch._disable_current_modes()
 def compile_fx_inner(
