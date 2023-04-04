@@ -54,11 +54,14 @@ jobs:
     runs-on: tps-pytorch-ci
     needs: [linux-cuda117-py310-gcc7-build]
     timeout-minutes: 240
+    strategy:
+      matrix:
+        SHARD_NUMBERS: [1, 2, 3, 4]
     env:
       CI: "true"
       TEST_CONFIG: "default"
       NUM_TEST_SHARDS: 4
-      SHARD_NUMBER: 1
+      SHARD_NUMBER: ${{ matrix.SHARD_NUMBERS }}
       GPU_NUM: 1
       DEBUG: 0
     steps:
