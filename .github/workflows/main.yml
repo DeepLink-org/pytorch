@@ -1,0 +1,73 @@
+name: pytorch ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - wgs/*
+  workflow_dispatch:
+
+env:
+  PVC_PATH: '/nvme/share/share/github/cibuild/${{ github.repository }}'
+  SOURCE_PATH: '/nvme/share/share/github/sourcecode'
+  HOME: "/var/lib/jenkins"
+  CI_IMAGE: "registry.sensetime.com/parrots/parrots:linux-bionic-cuda11.7-cudnn8-py3-gcc7"
+  BUILD_ENVIRONMENT: "linux-bionic-cuda11.7-py3.10-gcc7"
+
+jobs:
+  Checkout:
+    name: pull and rsync
+    runs-on: tps-pytorch-ci
+    timeout-minutes: 240
+    steps:
+      - name: rsync repo
+        run: |
+          cd ${SOURCE_PATH}/${{ github.event.repository.full_name }} && git pull
+          cd ${PVC_PATH} && rm -rf ${GITHUB_RUN_NUMBER} && mkdir -p ${GITHUB_RUN_NUMBER}/artifacts
+          rsync -a ${SOURCE_PATH}/${{ github.event.repository.full_name }} ${PVC_PATH}/${GITHUB_RUN_NUMBER}/
+          cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}
+          mv ${{ github.event.repository.name }} source && cd source && git checkout ${{ github.sha }} && git submodule sync && git submodule update --init --recursive
+
+  linux-cuda117-py310-gcc7-build:
+    name: linux-cuda117-py310-gcc7-build
+    runs-on: tps-pytorch-ci
+    needs: [Checkout]
+    timeout-minutes: 240
+    env:
+      TORCH_CUDA_ARCH_LIST: "7.0 7.5"
+      GPU_NUM: 1
+      DEBUG: 0
+    steps:
+      - name: build
+        run: |
+          set -e
+          cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
+          GPU_ID=`bash ${SOURCE_PATH}/tools/get_gpu.sh ${GPU_NUM}` && docker ps -aq -f status=exited | xargs docker rm || echo "no exiting container"
+          docker run --gpus "device=${GPU_ID}" \
+          -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
+          -v ${SOURCE_PATH}/tools:${HOME}/tools \
+          ${CI_IMAGE} bash -c "source /home/source/${GITHUB_JOB} && ${HOME}/tools/run.sh build "| tee >(docker logs -f)
+
+  linux-cuda117-py310-gcc7-test:
+    name: linux-cuda117-py310-gcc7-test
+    runs-on: tps-pytorch-ci
+    needs: [linux-cuda117-py310-gcc7-build]
+    timeout-minutes: 240
+    env:
+      CI: "true"
+      TEST_CONFIG: "default"
+      NUM_TEST_SHARDS: 4
+      SHARD_NUMBER: 1
+      GPU_NUM: 1
+      DEBUG: 0
+    steps:
+      - name: test
+        run: |
+          set -e
+          cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
+          GPU_ID=`bash ${SOURCE_PATH}/tools/get_gpu.sh ${GPU_NUM}` && docker ps -aq -f status=exited | xargs docker rm || echo "no exiting container"
+          docker run --name ${GITHUB_RUN_ID}_${GITHUB_JOB} \
+          --gpus "device=${GPU_ID}" \
+          -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
+          -v ${SOURCE_PATH}/tools:${HOME}/tools \
+          ${CI_IMAGE} bash -c "source /home/source/${GITHUB_JOB} && ${HOME}/tools/run.sh test" | tee >(docker logs -f)
