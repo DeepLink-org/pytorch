@@ -42,7 +42,7 @@ jobs:
         run: |
           set -e
           set -o pipefail
-          cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed 's/\"//g' ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
+          cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed -i 's/\"//g' ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
           GPU_ID=`bash ${SOURCE_PATH}/tools/get_gpu.sh ${GPU_NUM}` && docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus "device=${GPU_ID}" --tty --detach \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
@@ -71,7 +71,7 @@ jobs:
         run: |
           set -e
           set -o pipefail
-          cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed 's/\"//g' ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
+          cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed -i 's/\"//g' ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
           GPU_ID=`bash ${SOURCE_PATH}/tools/get_gpu.sh ${GPU_NUM}` && echo ${GPU_ID} && docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus all --tty --detach \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
