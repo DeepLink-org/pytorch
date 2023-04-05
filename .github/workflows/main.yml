@@ -70,9 +70,8 @@ jobs:
           set -e
           set -o pipefail
           cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
-          GPU_ID=`bash ${SOURCE_PATH}/tools/get_gpu.sh ${GPU_NUM}` && docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
-          docker run --name ${GITHUB_RUN_ID}_${GITHUB_JOB} \
-          --gpus "device=${GPU_ID}" \
+          GPU_ID=`bash ${SOURCE_PATH}/tools/get_gpu.sh ${GPU_NUM}` && echo ${GPU_ID} && docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
+          docker run --gpus "device=${GPU_ID}" \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           ${CI_IMAGE} bash -c "source /home/source/${GITHUB_JOB} && ${HOME}/tools/run.sh test" | tee output.txt
