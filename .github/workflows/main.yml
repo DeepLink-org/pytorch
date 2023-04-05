@@ -56,10 +56,10 @@ jobs:
     timeout-minutes: 240
     strategy:
       matrix:
-        SHARD_NUMBERS: [1, 2, 3, 4]
+        SHARD_NUMBERS: [1, 2, 3]
     env:
       CI: "true"
-      TEST_CONFIG: "default"
+      TEST_CONFIG: "distributed"
       NUM_TEST_SHARDS: 4
       SHARD_NUMBER: ${{ matrix.SHARD_NUMBERS }}
       GPU_NUM: 1
