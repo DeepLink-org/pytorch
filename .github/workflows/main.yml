@@ -67,8 +67,8 @@ jobs:
         run: |
           set -e
           set -o pipefail
-          export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo ${GPU_ID}
           cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed -i 's/\"//g' ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
+          export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo "export GPU_ID=${GPU_ID}" >> ${GITHUB_JOB}
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run  --gpus "device=${GPU_ID}" --tty --detach \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
@@ -93,8 +93,8 @@ jobs:
         run: |
           set -e
           set -o pipefail
-          export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo ${GPU_ID}
           cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed -i 's/\"//g' ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
+          export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo "export GPU_ID=${GPU_ID}" >> ${GITHUB_JOB}
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus "device=${GPU_ID}" --tty --detach \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
@@ -120,8 +120,8 @@ jobs:
         run: |
           set -e
           set -o pipefail
-          export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo ${GPU_ID}
           cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed -i 's/\"//g' ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
+          export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo "export GPU_ID=${GPU_ID}" >> ${GITHUB_JOB}
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus "device=${GPU_ID}" --tty --detach \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
@@ -146,8 +146,8 @@ jobs:
         run: |
           set -e
           set -o pipefail
-          export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo ${GPU_ID}
           cd ${PVC_PATH}/${GITHUB_RUN_NUMBER}/source && echo '${{ toJSON(env) }}' |grep -v '{\|}'> ${GITHUB_JOB} && sed -i 's/\"//g' ${GITHUB_JOB} && sed -i 's/,//g' ${GITHUB_JOB} && sed -i 's/:[ ]/=\"/g' ${GITHUB_JOB} && sed -i 's/$/&\"/' ${GITHUB_JOB} && sed -i 's/^/&export/' ${GITHUB_JOB}
+          export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo "export GPU_ID=${GPU_ID}" >> ${GITHUB_JOB}
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus "device=${GPU_ID}" --tty --detach \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
