@@ -34,7 +34,7 @@ jobs:
     needs: [Checkout]
     timeout-minutes: 240
     env:
-      TORCH_CUDA_ARCH_LIST: "7.0 7.5"
+      TORCH_CUDA_ARCH_LIST: "compute_70"
       GPU_NUM: 1
       DEBUG: 0
     steps:
