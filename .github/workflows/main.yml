@@ -180,7 +180,7 @@ jobs:
           export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo "export GPU_ID=${GPU_ID}" >> ${GITHUB_JOB}
           export local_pip=`echo ${GPU_ID} | cut -d"," -f1`
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
-          container_name=$(docker run --gpus "device=${GPU_ID}" --tty --detach \
+          container_name=$(docker run --gpus ${GPU_ID} --tty --detach \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           -v ${SOURCE_PATH}/local/${local_pip}:${HOME}/.local \
@@ -207,7 +207,7 @@ jobs:
           export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo "export GPU_ID=${GPU_ID}" >> ${GITHUB_JOB}
           export local_pip=`echo ${GPU_ID} | cut -d"," -f1`
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
-          container_name=$(docker run --gpus "device=${GPU_ID}" --tty --detach \
+          container_name=$(docker run --gpus ${GPU_ID} --tty --detach \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           -v ${SOURCE_PATH}/local/${local_pip}:${HOME}/.local \
@@ -234,7 +234,7 @@ jobs:
           export GPU_ID=`python3 ${SOURCE_PATH}/tools/get_gpu.py delete ${GPU_NUM}` && echo "export GPU_ID=${GPU_ID}" >> ${GITHUB_JOB}
           export local_pip=`echo ${GPU_ID} | cut -d"," -f1`
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
-          container_name=$(docker run --gpus "device=${GPU_ID}" --tty --detach \
+          container_name=$(docker run --gpus ${GPU_ID} --tty --detach \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           -v ${SOURCE_PATH}/local/${local_pip}:${HOME}/.local \
