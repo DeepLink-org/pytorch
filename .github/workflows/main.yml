@@ -71,6 +71,7 @@ jobs:
           export local_pip=`echo ${GPU_ID} | cut -d"," -f1`
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run  --gpus "device=${GPU_ID}" --tty --detach \
+          --shm-size=2g --cap-add=SYS_PTRACE \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           -v ${SOURCE_PATH}/local/${local_pip}:${HOME}/.local \
@@ -98,6 +99,7 @@ jobs:
           export local_pip=`echo ${GPU_ID} | cut -d"," -f1`
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus "device=${GPU_ID}" --tty --detach \
+          --shm-size=2g --cap-add=SYS_PTRACE \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           -v ${SOURCE_PATH}/local/${local_pip}:${HOME}/.local \
@@ -126,6 +128,7 @@ jobs:
           export local_pip=`echo ${GPU_ID} | cut -d"," -f1`
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus "device=${GPU_ID}" --tty --detach \
+          --shm-size=2g --cap-add=SYS_PTRACE \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           -v ${SOURCE_PATH}/local/${local_pip}:${HOME}/.local \
@@ -154,6 +157,7 @@ jobs:
           export local_pip=`echo ${GPU_ID} | cut -d"," -f1`
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus "device=${GPU_ID}" --tty --detach \
+          --shm-size=2g --cap-add=SYS_PTRACE \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           -v ${SOURCE_PATH}/local/${local_pip}:${HOME}/.local \
@@ -181,6 +185,7 @@ jobs:
           export local_pip=`echo ${GPU_ID} | cut -d"," -f1`
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus ${GPU_ID} --tty --detach \
+          --shm-size=2g --cap-add=SYS_PTRACE \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           -v ${SOURCE_PATH}/local/${local_pip}:${HOME}/.local \
@@ -208,6 +213,7 @@ jobs:
           export local_pip=`echo ${GPU_ID} | cut -d"," -f1`
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus ${GPU_ID} --tty --detach \
+          --shm-size=2g --cap-add=SYS_PTRACE \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           -v ${SOURCE_PATH}/local/${local_pip}:${HOME}/.local \
@@ -235,6 +241,7 @@ jobs:
           export local_pip=`echo ${GPU_ID} | cut -d"," -f1`
           docker ps -aq -f status=exited | xargs -r docker rm || echo "no exiting container"
           container_name=$(docker run --gpus ${GPU_ID} --tty --detach \
+          --shm-size=2g --cap-add=SYS_PTRACE \
           -v ${PVC_PATH}/${GITHUB_RUN_NUMBER}/:/home/ \
           -v ${SOURCE_PATH}/tools:${HOME}/tools \
           -v ${SOURCE_PATH}/local/${local_pip}:${HOME}/.local \
