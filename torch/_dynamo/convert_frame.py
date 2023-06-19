@@ -314,6 +314,10 @@ def _compile(
             export,
             mutated_closure_cell_contents,
         )
+
+        from . import check
+        check.global_scope = check.combine_scopes(globals, locals)
+
         with tracing(tracer.output.tracing_context):
             tracer.run()
         output = tracer.output
@@ -324,6 +328,9 @@ def _compile(
 
         if config.dead_code_elimination:
             instructions[:] = remove_pointless_jumps(remove_dead_code(instructions))
+
+        check.global_scope = None
+        check.reverse_locals = None
 
     try:
         for attempt in itertools.count():

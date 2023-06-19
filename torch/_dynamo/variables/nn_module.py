@@ -212,23 +212,21 @@ class NNModuleVariable(VariableTracker):
                 isinstance(mod, torch.nn.Sequential)
                 and mod.__class__.forward is torch.nn.Sequential.forward
             ):
-                # unroll Sequential()
-                assert not kwargs
-                (arg,) = args
-                for child_name, submod in mod.named_children():
-                    tx.call_function(
-                        tx.output.register_attr_or_module(
-                            submod,
-                            self.module_key,
-                            child_name,
-                            source=NNModuleSource(AttrSource(self.source, child_name)),
-                            **options,
-                        ),
-                        [arg],
-                        {},
-                    )
-                    arg = tx.pop()
-                return arg
+                fn = mod.__call__
+                fn_source = AttrSource(self.source, "__call__")
+                if istype(mod.__call__, types.MethodType):
+                    fn = fn.__func__
+                    fn_source = AttrSource(fn_source, "__func__")
+                    args = [self] + args
+                else:
+                    assert istype(mod.__call__, types.FunctionType)
+
+                options["source"] = fn_source
+                return tx.inline_user_function_return(
+                    variables.UserFunctionVariable(fn, **options),
+                    args,
+                    kwargs,
+                )
             elif is_allowed(mod.__class__):
                 # The module type will change after it is called
                 if is_lazy:

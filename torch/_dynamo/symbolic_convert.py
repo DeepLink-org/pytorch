@@ -336,15 +336,39 @@ def generic_jump(truth_fn: typing.Callable[[object], bool], push: bool):
 
 explain = False
 
-
 def break_graph_if_unsupported(*, push):
     def decorator(inner_fn):
         @functools.wraps(inner_fn)
         def wrapper(self: "InstructionTranslatorBase", inst: Instruction):
             state = self.copy_graphstate()
             reason = None
+            from .check import Partialsupported
             try:
                 return inner_fn(self, inst)
+            except Partialsupported as excp:
+                if not self.should_compile_partial_graph():
+                    unimplemented("Inlining N/A")
+
+                self.restore_graphstate(state)
+                self.output.compile_subgraph(self)
+                cg = PyCodegen(self)
+                cleanup: List[Instruction] = []
+
+                for b in self.block_stack:
+                    self.output.add_output_instructions(
+                        [
+                            *b.with_context.reconstruct(cg),
+                            *b.resume_fn().try_except(cg.code_options, cleanup),
+                        ]
+                    )
+                self.output.add_output_instructions(cleanup)
+
+                self.output.add_output_instructions(
+                    self.create_call_resume_at(inst)
+                )
+
+                return
+
             except Unsupported as excp:
                 if self.has_backedge() and self.should_compile_partial_graph():
                     msg = "Skipping frame because there is a graph break in a for/while loop"
@@ -492,6 +516,11 @@ class InstructionTranslatorBase(Checkpointable[InstructionTranslatorGraphState])
             and inner_fn._dynamo_forbidden
         ):
             raise AssertionError(f"Attempt to trace forbidden callable {inner_fn}")
+
+        from . import check
+        scope = check.combine_scopes(self.f_globals, self.f_locals)
+        check.check(fn, args, kwargs, scope)
+
         self.push(fn.call_function(self, args, kwargs))
 
     def update_locals_and_stack(self, oldvar: VariableTracker, newvar: VariableTracker):
@@ -1808,6 +1837,9 @@ class InstructionTranslator(InstructionTranslatorBase):
             for k in vars
             if k in f_locals
         )
+
+        from . import check
+        check.reverse_locals = dict(zip(self.symbolic_locals.values(), self.symbolic_locals.keys()))
 
         # symbolic_locals contains the mapping from original f_locals to the
         # Variable objects. During the Variable building phase, each object also

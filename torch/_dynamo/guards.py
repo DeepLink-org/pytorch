@@ -710,6 +710,12 @@ class CheckFunctionManager:
         verbose_code_parts.extend(local_builder.shape_env_code)
         assert not global_builder.shape_env_code
 
+        from . import check
+        if check.extra_guards is not None:
+            code_parts.append(check.extra_guards)
+            verbose_code_parts.append(check.extra_guards)
+            check.extra_guards = None
+
         code = " and ".join(unique(code_parts))
         closure_vars = collections.OrderedDict(
             [

@@ -16,6 +16,7 @@ from .eval_frame import (
 )
 from .external_utils import is_compiling
 from .utils import compilation_metrics, guard_failures, orig_code_map, reset_frame_count
+from . import check
 
 __all__ = [
     "allow_in_graph",
