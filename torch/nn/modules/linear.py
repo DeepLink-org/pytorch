@@ -98,7 +98,7 @@ class Linear(Module):
             self.bias = Parameter(torch.empty(out_features, **factory_kwargs))
         else:
             self.register_parameter('bias', None)
-        self.reset_parameters()
+        # self.reset_parameters()
 
     def reset_parameters(self) -> None:
         # Setting a=sqrt(5) in kaiming_uniform is the same as initializing with
