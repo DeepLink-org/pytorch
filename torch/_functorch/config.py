@@ -10,6 +10,9 @@ Global flags for aot autograd
 import os
 import sys
 
+use_fake_tensor = True
+use_dynamic_shapes = os.getenv("AOT_DYNAMIC_SHAPES", False)
+
 # Converts torch rng ops to their functional philox rng equivalents. Note that
 # we functionalize only CUDA rng ops today.
 functionalize_rng_ops = False
