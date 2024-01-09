@@ -110,20 +110,20 @@ class AdamW(Optimizer):
                 state["step"] = (
                     torch.zeros((), dtype=torch.float, device=p.device)
                     if group["capturable"] or group["fused"]
-                    else torch.tensor(0.0)
+                    else torch.tensor(0.0, device=p.device)
                 )
                 # Exponential moving average of gradient values
                 state["exp_avg"] = torch.zeros_like(
-                    p, memory_format=torch.preserve_format
+                    p, memory_format=torch.preserve_format, device=p.device
                 )
                 # Exponential moving average of squared gradient values
                 state["exp_avg_sq"] = torch.zeros_like(
-                    p, memory_format=torch.preserve_format
+                    p, memory_format=torch.preserve_format, device=p.device
                 )
                 if amsgrad:
                     # Maintains max of all exp. moving avg. of sq. grad. values
                     state["max_exp_avg_sq"] = torch.zeros_like(
-                        p, memory_format=torch.preserve_format
+                        p, memory_format=torch.preserve_format, device=p.device
                     )
 
             exp_avgs.append(state["exp_avg"])
