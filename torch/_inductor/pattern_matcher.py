@@ -727,6 +727,10 @@ def register_replacement(
 
         Recheck the match with the correct shapes.
         """
+        # print(argnames)
+        # print(match.kwargs)
+        # if 'range_1' in argnames:
+        #     import pdb; pdb.set_trace()
         args = list(
             torch.fx.map_arg(
                 [match.kwargs[name] for name in argnames], lambda n: n.meta["val"]
@@ -902,7 +906,9 @@ class PatternMatcherPass:
                 # Note: we will only skip cpu compute if disable_cpp_codegen=True
                 if fallback_node_due_to_unsupported_type(node, allow_cpu_inputs=False):
                     continue
-
+                
+                # if "ascend_op.Slice" in str(node.target):
+                #     import pdb; pdb.set_trace()
                 for entry in self.patterns[node.target]:
                     if node._erased:
                         break
@@ -918,6 +924,7 @@ class PatternMatcherPass:
                         log.warning("%s%s %s %s", node, node.args, m, entry.pattern)
                     if m and entry.extra_check(m):
                         count += 1
+                        # import pdb; pdb.set_trace()
                         entry.apply(m, graph, node)
                         counters["inductor"]["pattern_matcher_count"] += 1
                         counters["inductor"]["pattern_matcher_nodes"] += len(m.nodes)

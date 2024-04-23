@@ -11,6 +11,8 @@ export USE_XNNPACK=0
 export USE_NNPACK=0
 export DEBUG=0
 export BUILD_TEST=0
+export std=c++17
+export CMAKE_CXX_STANDARD=17
 # export USE_MKLDNN=0
 
 if [ ${DEBUG} == 1 ]; then
